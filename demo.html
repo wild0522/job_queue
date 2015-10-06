@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		
+	</head>
+	<body>
+<button class="btn-start">start!</button>
+<button class="btn-clear">clear!</button>
+
+
+		<script src="job_queue.min.js"></script>
+		<script>
+			var test_queue = new job_queue();
+			test_queue.init($('body'), 'test');
+			
+			$(document).ready(function(){
+			
+				test_queue.reg_first(function(){
+					$('body').append('<div>first</div>');
+				});
+				
+				test_queue.reg_last(function(){
+					$('body').append('<div>last</div>');
+				});
+				
+				for(var i =0; i < 5; i++) {
+					test_queue.reg(function(){ // <---dont't add any function paramater
+						$('body').append('<div>no.' + test_queue.number() + '</div>');
+						
+						if(1==2) {
+							alert('error');
+							//stop & clear
+							test_queue.clear();
+						}
+						
+						//next
+						test_queue.next();
+					});
+				}
+				
+				for(var i =0; i < 5; i++) {
+					test_queue.reg(function(){
+						$('body').append('<div>no.' + test_queue.number() + '</div>');
+					});
+				}
+				
+				$('.btn-start').click(function(){
+					//start & restart
+					test_queue.next();				
+				});
+				
+				$('.btn-clear').click(function(){
+					$('div').remove();
+					//stop & clear
+					test_queue.clear();				
+				});
+				
+				
+			});
+		</script>
+	</body>
+</html>
